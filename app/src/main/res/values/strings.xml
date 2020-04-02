@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">GithubBrowser</string>
+    <string name="app_name">Github Browser</string>
+
+    <string name="empty_list_text">No results.</string>
+
+    <string name="menu_refresh">Refresh</string>
+
+    <!-- Error States -->
+    <string name="error_network_message">Unable to connect to server.\nPlease try again.</string>
+    <string name="error_malformed_json_message">Something went wrong with the data. Check the logs.</string>
+    <string name="unknown_error_message">Unknown Error: %s</string>
 </resources>

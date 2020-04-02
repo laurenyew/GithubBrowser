@@ -8,6 +8,7 @@ Android sample app to browse popular github repos for a given organization
 - Given an invalid organization name, and empty list / error state should show 
 
 ## Extra features
+- Pull to refresh
 - Master Detail List View
 - Unit tests
 - Espresso tests
@@ -20,7 +21,6 @@ Android sample app to browse popular github repos for a given organization
 - Dagger 2
 - Moshi
 - Retrofit
-- Picasso
 - Okhttp
 - Gradle
 - Room?
