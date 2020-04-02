@@ -39,7 +39,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/repo_language"
         app:layout_constraintTop_toBottomOf="@+id/repo_name"
-        tools:text="Watchers: 1" />
+        tools:text="Stars: 1" />
 
     <TextView
         android:id="@+id/repo_description"

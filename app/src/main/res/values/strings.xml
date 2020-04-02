@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Github Browser</string>
 
-    <string name="search_title">Search the TOP 3 most popular repos\nby Github Organization</string>
-    <string name="search_hint">Enter a Github Organization. Ex: Google</string>
+    <string name="search_title">Search the top 3 most popular repos\nby Github Organization</string>
+    <string name="search_hint">Ex: Google</string>
     <string name="search_error">Unable to find organization name.</string>
 
     <string name="empty_list_text">No results.</string>

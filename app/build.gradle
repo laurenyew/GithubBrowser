@@ -6,7 +6,6 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 29
 
-
     defaultConfig {
         applicationId "com.laurenyew.githubbrowser"
         minSdkVersion 23
@@ -31,6 +30,10 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    kapt {
+        generateStubs = true
     }
 
     testOptions {
@@ -62,9 +65,9 @@ dependencies {
 
     // Dagger 2
     implementation "com.google.dagger:dagger:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
     // Networking
     api("com.squareup.retrofit2:retrofit:$retrofit_version")
