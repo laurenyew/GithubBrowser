@@ -5,6 +5,5 @@ data class GithubRepository(
     val name: String,
     val language: String?,
     val numStars: Int,
-    val numWatchers: Int,
     val description: String?
 )

@@ -1,4 +1,4 @@
-package com.laurenyew.githubbrowser.keys
+package com.laurenyew.githubbrowser.di.keys
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

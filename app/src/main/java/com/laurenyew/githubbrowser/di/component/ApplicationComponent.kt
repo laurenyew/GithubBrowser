@@ -18,6 +18,7 @@ import javax.inject.Singleton
         ContextModule::class,
         ActivityBindingModule::class,
         FragmentBindingModule::class,
+        RepositoryModule::class,
         ViewModelModule::class,
         NetworkModule::class
     ]

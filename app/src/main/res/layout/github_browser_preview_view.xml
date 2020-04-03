@@ -29,7 +29,7 @@
         tools:text="Kotlin" />
 
     <TextView
-        android:id="@+id/watcher_count"
+        android:id="@+id/repo_star_count"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

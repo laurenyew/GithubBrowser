@@ -7,6 +7,8 @@
 
     <string name="empty_list_text">No results.</string>
 
+    <string name="github_repo_star_count" formatted="true">Stars: %d</string>
+
     <string name="menu_refresh">Refresh</string>
 
     <!-- Error States -->
