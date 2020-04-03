@@ -1,16 +1,17 @@
 package com.laurenyew.githubbrowser.ui.browser
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.laurenyew.githubbrowser.R
 import com.laurenyew.githubbrowser.repository.models.ErrorState
-import com.laurenyew.githubbrowser.repository.models.GithubRepository
+import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
 import com.laurenyew.githubbrowser.ui.ViewModelFactory
 import com.laurenyew.githubbrowser.ui.browser.views.GithubBrowserRecyclerViewAdapter
 import dagger.android.support.DaggerFragment
@@ -43,7 +44,7 @@ class GithubBrowserFragment : DaggerFragment() {
         setupGithubBrowserListView()
 
         viewModel =
-            ViewModelProviders.of(this, viewModelFactory)[GithubBrowserViewModel::class.java]
+            ViewModelProvider(this, viewModelFactory)[GithubBrowserViewModel::class.java]
         setupViewModelObservers()
     }
 
@@ -69,6 +70,9 @@ class GithubBrowserFragment : DaggerFragment() {
         github_browser_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 searchGithubRepos()
+                val imm =
+                    activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(view?.windowToken, 0)
                 return true
             }
 
@@ -107,7 +111,7 @@ class GithubBrowserFragment : DaggerFragment() {
         viewModel.searchGithubForTopReposBy(organizationName)
     }
 
-    private fun loadGithubRepoResults(results: List<GithubRepository>) {
+    private fun loadGithubRepoResults(results: List<GithubRepositoryModel>) {
         if (adapter == null) {
             adapter = GithubBrowserRecyclerViewAdapter()
             github_brower_recycler_view.adapter = adapter

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.laurenyew.githubbrowser.R
-import com.laurenyew.githubbrowser.repository.models.GithubRepository
+import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,14 +15,14 @@ class GithubBrowserRecyclerViewAdapter : RecyclerView.Adapter<GithubRepoPreviewV
     CoroutineScope {
 
     private val job = Job()
-    private var data: MutableList<GithubRepository> = ArrayList()
-    private var pendingDataUpdates = ArrayDeque<List<GithubRepository>>()
+    private var data: MutableList<GithubRepositoryModel> = ArrayList()
+    private var pendingDataUpdates = ArrayDeque<List<GithubRepositoryModel>>()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + job
 
     //RecyclerView Diff.Util (List Updates)
-    fun updateData(newData: List<GithubRepository>?) {
+    fun updateData(newData: List<GithubRepositoryModel>?) {
         if (isActive) {
             val data = newData ?: ArrayList()
             pendingDataUpdates.add(data)
@@ -42,7 +42,7 @@ class GithubBrowserRecyclerViewAdapter : RecyclerView.Adapter<GithubRepoPreviewV
      * Handle the diff util update on a background thread
      * (this can take O(n) time so we don't want it on the main thread)
      */
-    private fun updateDataInternal(newData: List<GithubRepository>?) {
+    private fun updateDataInternal(newData: List<GithubRepositoryModel>?) {
         val oldData = ArrayList(data)
 
         launch {
@@ -61,7 +61,7 @@ class GithubBrowserRecyclerViewAdapter : RecyclerView.Adapter<GithubRepoPreviewV
      * and take in the latest update
      */
     private fun applyDataDiffResult(
-        newData: List<GithubRepository>?,
+        newData: List<GithubRepositoryModel>?,
         diffResult: DiffUtil.DiffResult
     ) {
         if (pendingDataUpdates.isNotEmpty()) {
@@ -84,8 +84,8 @@ class GithubBrowserRecyclerViewAdapter : RecyclerView.Adapter<GithubRepoPreviewV
     }
 
     private fun createDataDiffCallback(
-        oldData: List<GithubRepository>?,
-        newData: List<GithubRepository>?
+        oldData: List<GithubRepositoryModel>?,
+        newData: List<GithubRepositoryModel>?
     ): DiffUtil.Callback =
         GithubRepoDataDiffCallback(oldData, newData)
     //endregion
@@ -103,7 +103,13 @@ class GithubBrowserRecyclerViewAdapter : RecyclerView.Adapter<GithubRepoPreviewV
         holder.rankingTextView.text = (position + 1).toString()
         holder.nameTextView.text = item.name
         holder.descriptionTextView.text = item.description ?: ""
-        holder.languageTextView.text = item.language
+        val language = item.language
+        holder.languageTextView.text = if (language.isNullOrBlank()) {
+            context.getString(R.string.unknown)
+        } else {
+            language
+        }
+
         holder.starCountTextView.text =
             context.getString(R.string.github_repo_star_count, item.numStars)
     }

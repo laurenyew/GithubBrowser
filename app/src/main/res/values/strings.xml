@@ -2,9 +2,9 @@
     <string name="app_name">Github Browser</string>
 
     <string name="search_title">Search the top 3 most popular repos\nby Github Organization</string>
-    <string name="search_hint">Ex: Google</string>
+    <string name="search_hint">Ex: octokit</string>
     <string name="search_error">Unable to find organization name.</string>
-
+    <string name="unknown">Unknown</string>
     <string name="empty_list_text">No results.</string>
 
     <string name="github_repo_star_count" formatted="true">Stars: %d</string>
