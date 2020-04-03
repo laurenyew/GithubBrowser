@@ -14,7 +14,7 @@ internal abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(GithubBrowserViewModel::class)
-    abstract fun bindGithubBrowserViewModel(githubBrowserViewModel: GithubBrowserViewModel?): ViewModel?
+    abstract fun bindGithubBrowserViewModel(githubBrowserViewModel: GithubBrowserViewModel): ViewModel
 
 // TODO   @Binds
 //    @IntoMap
@@ -22,5 +22,5 @@ internal abstract class ViewModelModule {
 //    abstract fun bindGithubRepoDetailsViewModel(detailsViewModel: GithubRepoDetailsViewModel?): ViewModel?
 
     @Binds
-    abstract fun bindViewModelFactory(factory: ViewModelFactory?): ViewModelProvider.Factory?
+    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 }

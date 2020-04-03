@@ -7,7 +7,7 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class FragmentBindingModule {
     @ContributesAndroidInjector
-    abstract fun provideGithubBrowserFragment(): GithubBrowserFragment?
+    abstract fun bindGithubBrowserFragment(): GithubBrowserFragment
 
 // TODO    @ContributesAndroidInjector
 //    abstract fun provideRepoDetailsFragment(): GithubRepoDetailsFragment?

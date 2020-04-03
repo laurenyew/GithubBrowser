@@ -2,6 +2,7 @@ package com.laurenyew.githubbrowser.ui.browser
 
 import android.os.Bundle
 import android.view.*
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,9 +17,10 @@ import kotlinx.android.synthetic.main.github_browser_fragment.*
 import javax.inject.Inject
 
 
-class GithubBrowserFragment
-@Inject constructor(private val viewModelFactory: ViewModelFactory) :
-    Fragment() {
+class GithubBrowserFragment : Fragment() {
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private var adapter: GithubBrowserRecyclerViewAdapter? = null
     private lateinit var viewModel: GithubBrowserViewModel
 
@@ -36,6 +38,7 @@ class GithubBrowserFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupSearchView()
         setupGithubBrowserListView()
 
         viewModel =
@@ -50,7 +53,7 @@ class GithubBrowserFragment
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         if (item.itemId == R.id.menu_refresh) {
-            //TODO Refresh
+            searchGithubRepos()
             true
         } else {
             super.onOptionsItemSelected(item)
@@ -59,6 +62,19 @@ class GithubBrowserFragment
     override fun onDestroyView() {
         super.onDestroyView()
         adapter?.onDestroy()
+    }
+
+    private fun setupSearchView() {
+        github_browser_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchGithubRepos()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
     }
 
     private fun setupGithubBrowserListView() {
@@ -85,6 +101,11 @@ class GithubBrowserFragment
         })
     }
 
+    private fun searchGithubRepos() {
+        val organizationName = github_browser_search_view.query.toString()
+        viewModel.searchGithubForTopReposBy(organizationName)
+    }
+
     private fun loadGithubRepoResults(results: List<GithubRepository>) {
         if (adapter == null) {
             adapter = GithubBrowserRecyclerViewAdapter()
@@ -108,5 +129,9 @@ class GithubBrowserFragment
     private fun updateErrorState(errorState: ErrorState?) {
         error_state_message.visibility =
             if (errorState == ErrorState.NetworkError) View.VISIBLE else View.GONE
+    }
+
+    companion object {
+        fun newInstance() = GithubBrowserFragment()
     }
 }
