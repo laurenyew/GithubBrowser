@@ -13,11 +13,12 @@ import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepository
 import com.laurenyew.githubbrowser.ui.ViewModelFactory
 import com.laurenyew.githubbrowser.ui.browser.views.GithubBrowserRecyclerViewAdapter
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.github_browser_fragment.*
 import javax.inject.Inject
 
 
-class GithubBrowserFragment : Fragment() {
+class GithubBrowserFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
