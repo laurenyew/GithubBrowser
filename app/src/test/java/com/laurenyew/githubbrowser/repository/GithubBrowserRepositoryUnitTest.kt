@@ -1,7 +1,9 @@
 package com.laurenyew.githubbrowser.repository
 
+import android.util.MalformedJsonException
 import com.laurenyew.githubbrowser.helpers.GithubRepositoryResponseFactory.createTestGithubRepositoryResponseSuccess
 import com.laurenyew.githubbrowser.helpers.SearchGithubRepositoriesResponseFactory.createTestSearchGithubRepositoriesResponse
+import com.laurenyew.githubbrowser.helpers.TestConstants.INVALID_ORG_NAME
 import com.laurenyew.githubbrowser.helpers.TestConstants.INVALID_ORG_QUERY
 import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_NAME
 import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_QUERY
@@ -9,7 +11,6 @@ import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryResponse
 import com.laurenyew.githubbrowser.repository.networking.api.GithubApi
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
@@ -19,7 +20,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import retrofit2.HttpException
 
 @RunWith(MockitoJUnitRunner::class)
 class GithubBrowserRepositoryUnitTest {
@@ -61,13 +61,14 @@ class GithubBrowserRepositoryUnitTest {
     fun `searchTopGithubRepositoriesByOrganization with invalid organization, calls api, returns faliure response`() {
         // Setup
         whenever(mockGithubApi.searchRepositories(INVALID_ORG_QUERY)).doReturn(
-            Single.error(HttpException(mock()))
+            Single.error(MalformedJsonException("invalid JSON"))
         )
-        val invalidRepositoryResult = GithubRepositoryResponse.Failure(ErrorState.NetworkError)
+        val invalidRepositoryResult =
+            GithubRepositoryResponse.Failure(ErrorState.MalformedResultError)
 
         // Exercise
         val testObserver =
-            repository.searchTopGithubRepositoriesByOrganization(INVALID_ORG_QUERY).test()
+            repository.searchTopGithubRepositoriesByOrganization(INVALID_ORG_NAME).test()
 
         // Verify
         verify(mockGithubApi).searchRepositories(INVALID_ORG_QUERY)
