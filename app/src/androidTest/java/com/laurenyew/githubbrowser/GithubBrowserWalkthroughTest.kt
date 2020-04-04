@@ -2,6 +2,7 @@ package com.laurenyew.githubbrowser
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
@@ -10,11 +11,13 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.laurenyew.githubbrowser.ui.GithubBrowserActivity
 import com.laurenyew.githubbrowser.ui.browser.GithubBrowserScreen
-import com.laurenyew.githubbrowser.ui.detail.GithubRepoDetailScreen
 import junit.framework.Assert.assertEquals
 import org.hamcrest.CoreMatchers.not
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -22,7 +25,9 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class GithubBrowserWalkthroughTest {
     private val browser = GithubBrowserScreen()
-    private val detail = GithubRepoDetailScreen()
+
+    @get:Rule
+    var activityScenarioRule = activityScenarioRule<GithubBrowserActivity>()
 
     @Test
     fun happyPathWalkthroughSearchListDetail() {
@@ -43,8 +48,15 @@ class GithubBrowserWalkthroughTest {
         // Click detail
         onView(withText("1")).perform(click())
 
-        // Verify on Detail
-        detail.webview.check(matches(isDisplayed()))
+        // Go back
+        Espresso.pressBack()
+
+        // Verify back on list
+        browser.searchTitleTextView.check(matches(isDisplayed()))
+        browser.searchView.check(matches(isDisplayed()))
+        browser.repoRecyclerView.check(RecyclerViewItemCountAssertion(3))
+        browser.emptyTextView.check(matches(not(isDisplayed())))
+        browser.errorTextView.check(matches(not(isDisplayed())))
     }
 
     @Test
