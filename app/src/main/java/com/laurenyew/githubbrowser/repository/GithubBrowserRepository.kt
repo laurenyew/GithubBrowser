@@ -1,6 +1,7 @@
 package com.laurenyew.githubbrowser.repository
 
 import android.util.MalformedJsonException
+import androidx.annotation.VisibleForTesting
 import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryResponse
@@ -49,7 +50,8 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
         return GithubRepositoryResponse.Success(repos)
     }
 
-    private fun parseGithubRepositoriesResponseError(exception: Throwable): GithubRepositoryResponse {
+    @VisibleForTesting
+    fun parseGithubRepositoriesResponseError(exception: Throwable): GithubRepositoryResponse {
         val errorState = when (exception) {
             is HttpException ->
                 when (exception.code()) {
@@ -64,8 +66,10 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
     }
 
     companion object {
-        private const val INVALID_QUERY_ERROR_CODE = 422
-        private const val RATE_LIMIT_ERROR_CODE = 403
+        @VisibleForTesting
+        const val INVALID_QUERY_ERROR_CODE = 422
+        @VisibleForTesting
+        const val RATE_LIMIT_ERROR_CODE = 403
         private const val ORG_QUERY = "org:"
     }
 }
