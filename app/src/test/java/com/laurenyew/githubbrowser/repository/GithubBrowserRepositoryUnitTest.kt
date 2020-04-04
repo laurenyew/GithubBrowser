@@ -2,9 +2,15 @@ package com.laurenyew.githubbrowser.repository
 
 import com.laurenyew.githubbrowser.helpers.GithubRepositoryResponseFactory.createTestGithubRepositoryResponseSuccess
 import com.laurenyew.githubbrowser.helpers.SearchGithubRepositoriesResponseFactory.createTestSearchGithubRepositoriesResponse
+import com.laurenyew.githubbrowser.helpers.TestConstants.INVALID_ORG_QUERY
+import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_NAME
 import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_QUERY
+import com.laurenyew.githubbrowser.repository.models.ErrorState
+import com.laurenyew.githubbrowser.repository.models.GithubRepositoryResponse
 import com.laurenyew.githubbrowser.repository.networking.api.GithubApi
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Before
@@ -13,6 +19,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
+import retrofit2.HttpException
 
 @RunWith(MockitoJUnitRunner::class)
 class GithubBrowserRepositoryUnitTest {
@@ -28,7 +35,7 @@ class GithubBrowserRepositoryUnitTest {
     }
 
     @Test
-    fun `searchTopGithubRepositoriesByOrganization with valid organization, calls api, returns valid response`() {
+    fun `searchTopGithubRepositoriesByOrganization with valid organization, calls api, returns success response`() {
         // Setup
         val validApiResponse = createTestSearchGithubRepositoriesResponse(3)
         whenever(mockGithubApi.searchRepositories(VALID_ORG_QUERY)).doReturn(
@@ -38,12 +45,33 @@ class GithubBrowserRepositoryUnitTest {
         )
         val validRepositoryResult = createTestGithubRepositoryResponseSuccess(3)
 
-
         // Exercise
-        val testObserver = repository.searchTopGithubRepositoriesByOrganization("test").test()
+        val testObserver =
+            repository.searchTopGithubRepositoriesByOrganization(VALID_ORG_NAME).test()
 
         // Verify
+        verify(mockGithubApi).searchRepositories(VALID_ORG_QUERY)
         testObserver.assertValue(validRepositoryResult)
+
+        // Cleanup
+        testObserver.dispose()
+    }
+
+    @Test
+    fun `searchTopGithubRepositoriesByOrganization with invalid organization, calls api, returns faliure response`() {
+        // Setup
+        whenever(mockGithubApi.searchRepositories(INVALID_ORG_QUERY)).doReturn(
+            Single.error(HttpException(mock()))
+        )
+        val invalidRepositoryResult = GithubRepositoryResponse.Failure(ErrorState.NetworkError)
+
+        // Exercise
+        val testObserver =
+            repository.searchTopGithubRepositoriesByOrganization(INVALID_ORG_QUERY).test()
+
+        // Verify
+        verify(mockGithubApi).searchRepositories(INVALID_ORG_QUERY)
+        testObserver.assertValue(invalidRepositoryResult)
 
         // Cleanup
         testObserver.dispose()
