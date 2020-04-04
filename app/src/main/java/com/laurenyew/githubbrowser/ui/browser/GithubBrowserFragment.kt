@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.laurenyew.githubbrowser.R
 import com.laurenyew.githubbrowser.repository.models.ErrorState
-import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
-import com.laurenyew.githubbrowser.ui.ViewModelFactory
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
+import com.laurenyew.githubbrowser.ui.utils.ViewModelFactory
 import com.laurenyew.githubbrowser.ui.browser.views.GithubBrowserRecyclerViewAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.github_browser_fragment.*
@@ -114,7 +114,7 @@ class GithubBrowserFragment : DaggerFragment() {
         viewModel.searchGithubForTopReposBy(organizationName)
     }
 
-    private fun loadGithubRepoResults(results: List<GithubRepositoryModel>) {
+    private fun loadGithubRepoResults(results: List<GithubRepoModel>) {
         if (adapter == null) {
             adapter = GithubBrowserRecyclerViewAdapter { selectedRepo ->
                 viewModel.openRepoDetails(selectedRepo.websiteUrl)

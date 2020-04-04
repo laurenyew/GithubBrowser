@@ -1,11 +1,12 @@
 package com.laurenyew.githubbrowser.repository
 
 import android.util.MalformedJsonException
+import androidx.annotation.VisibleForTesting
 import com.laurenyew.githubbrowser.repository.models.ErrorState
-import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
-import com.laurenyew.githubbrowser.repository.models.GithubRepositoryResponse
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModelsResponse
 import com.laurenyew.githubbrowser.repository.networking.api.GithubApi
-import com.laurenyew.githubbrowser.repository.networking.api.responses.SearchGithubRepositoriesResponse
+import com.laurenyew.githubbrowser.repository.networking.api.responses.SearchGithubReposResponse
 import io.reactivex.Observable
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -13,9 +14,9 @@ import javax.inject.Singleton
 
 @Singleton
 class GithubBrowserRepository @Inject constructor(private val githubApi: GithubApi) {
-    fun searchTopGithubRepositoriesByOrganization(organizationName: String?): Observable<GithubRepositoryResponse> =
+    fun searchTopGithubRepositoriesByOrganization(organizationName: String?): Observable<GithubRepoModelsResponse> =
         githubApi
-            .searchRepositories(createSearchRepositoriesQuery(organizationName))
+            .searchRepos(createSearchRepositoriesQuery(organizationName))
             .map {
                 parseGithubRepositoriesResponseSuccess(it)
             }
@@ -26,17 +27,17 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
 
     private fun createSearchRepositoriesQuery(organizationName: String?): String =
         if (organizationName != null) {
-            "org:${organizationName}"
+            ORG_QUERY + organizationName
         } else {
             ""
         }
 
 
-    private fun parseGithubRepositoriesResponseSuccess(response: SearchGithubRepositoriesResponse): GithubRepositoryResponse {
-        val repos = arrayListOf<GithubRepositoryModel>()
+    private fun parseGithubRepositoriesResponseSuccess(response: SearchGithubReposResponse): GithubRepoModelsResponse {
+        val repos = arrayListOf<GithubRepoModel>()
         response.items.forEach {
             repos.add(
-                GithubRepositoryModel(
+                GithubRepoModel(
                     id = it.id,
                     name = it.name,
                     language = it.language,
@@ -46,10 +47,11 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
                 )
             )
         }
-        return GithubRepositoryResponse.Success(repos)
+        return GithubRepoModelsResponse.Success(repos)
     }
 
-    private fun parseGithubRepositoriesResponseError(exception: Throwable): GithubRepositoryResponse {
+    @VisibleForTesting
+    fun parseGithubRepositoriesResponseError(exception: Throwable): GithubRepoModelsResponse {
         val errorState = when (exception) {
             is HttpException ->
                 when (exception.code()) {
@@ -60,11 +62,14 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
             is MalformedJsonException -> ErrorState.MalformedResultError
             else -> ErrorState.UnknownError(exception.message)
         }
-        return GithubRepositoryResponse.Failure(errorState)
+        return GithubRepoModelsResponse.Failure(errorState)
     }
 
     companion object {
-        private const val INVALID_QUERY_ERROR_CODE = 422
-        private const val RATE_LIMIT_ERROR_CODE = 403
+        @VisibleForTesting
+        const val INVALID_QUERY_ERROR_CODE = 422
+        @VisibleForTesting
+        const val RATE_LIMIT_ERROR_CODE = 403
+        private const val ORG_QUERY = "org:"
     }
 }
