@@ -8,6 +8,7 @@ import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_NAME
 import com.laurenyew.githubbrowser.repository.GithubBrowserRepository
 import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
+import com.laurenyew.githubbrowser.utils.SchedulersProvider
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Observable
 import io.reactivex.schedulers.TestScheduler
@@ -21,9 +22,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
+import java.util.concurrent.TimeUnit
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -37,10 +38,16 @@ class GithubRepoViewModelUnitTest {
 
     @Mock
     private lateinit var mockContext: Context
+
     @Mock
     private lateinit var mockRepository: GithubBrowserRepository
+
+    @Mock
+    private lateinit var mockSchedulerProvider: SchedulersProvider
+
     @Mock
     private lateinit var reposObserver: Observer<List<GithubRepoModel>>
+
     @Mock
     private lateinit var errorObserver: Observer<ErrorState?>
 
@@ -58,15 +65,12 @@ class GithubRepoViewModelUnitTest {
         MockitoAnnotations.initMocks(this)
         Dispatchers.setMain(mockMainThread)
 
-        viewModel = GithubBrowserViewModel(mockContext, mockRepository)
+        whenever(mockSchedulerProvider.io()).doReturn(testScheduler)
+        whenever(mockSchedulerProvider.mainThread()).doReturn(testScheduler)
+
+        viewModel = GithubBrowserViewModel(mockContext, mockRepository, mockSchedulerProvider)
         viewModel.githubRepos.observeForever(reposObserver)
         viewModel.errorState.observeForever(errorObserver)
-
-
-        whenever(viewModel)
-        Mockito.doReturn(testScheduler)
-            .`when`(viewModel)
-            .getSchedulerIo()
     }
 
     @After
@@ -83,20 +87,19 @@ class GithubRepoViewModelUnitTest {
     @Test
     fun `searchGithubForTopReposBy valid organization`() {
         // Setup
-       whenever(mockRepository.searchTopGithubRepositoriesByOrganization(VALID_ORG_NAME)).doReturn(
+        whenever(mockRepository.searchTopGithubRepositoriesByOrganization(VALID_ORG_NAME)).doReturn(
             Observable.just(happyPathRepoResponse)
         )
 
         // Exercise
-
-
         viewModel.searchGithubForTopReposBy(VALID_ORG_NAME)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         // Verify
         verify(reposObserver, times(1)).onChanged(
             argThat { equals(happyPathRepoList) }
         )
-        verify(errorObserver, times(1)).onChanged(null)
+        verify(errorObserver, times(2)).onChanged(null)
     }
 
     @Test
