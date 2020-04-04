@@ -50,7 +50,6 @@
         android:layout_marginEnd="@dimen/default_margin"
         android:layout_marginBottom="@dimen/default_margin"
         android:ellipsize="end"
-        android:lines="2"
         android:maxLines="2"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"

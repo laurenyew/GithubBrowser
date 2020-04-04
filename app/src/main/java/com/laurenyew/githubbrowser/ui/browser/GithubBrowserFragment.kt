@@ -132,8 +132,15 @@ class GithubBrowserFragment : DaggerFragment() {
      * Show error message for errors
      */
     private fun updateErrorState(errorState: ErrorState?) {
-        error_state_message.visibility =
-            if (errorState == ErrorState.NetworkError) View.VISIBLE else View.GONE
+        errorState?.let {
+            error_state_message.text = when (errorState) {
+                ErrorState.HitRateLimitError -> getString(R.string.error_hit_rate_limit_message)
+                ErrorState.InvalidQueryError -> getString(R.string.error_invalid_search_query)
+                ErrorState.MalformedResultError -> getString(R.string.error_malformed_json_message)
+                else -> getString(R.string.error_network_message)
+            }
+        }
+        error_state_message.visibility = if (errorState != null) View.VISIBLE else View.GONE
     }
 
     companion object {

@@ -53,19 +53,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/github_browser_search_view" />
 
-    <TextView
-        android:id="@+id/error_state_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
-        android:text="@string/error_network_message"
-        android:textAlignment="center"
-        android:textSize="@dimen/large_font_size"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/empty_github_browser"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/github_browser_search_view" />
 
     <TextView
         android:id="@+id/empty_github_browser"
@@ -76,9 +63,25 @@
         android:textAlignment="center"
         android:textSize="@dimen/large_font_size"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/error_state_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/github_browser_search_view" />
+
+    <TextView
+        android:id="@+id/error_state_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:text="@string/error_network_message"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/large_font_size"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/github_browser_search_view" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

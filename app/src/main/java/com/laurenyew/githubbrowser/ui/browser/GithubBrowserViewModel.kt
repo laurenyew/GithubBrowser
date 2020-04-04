@@ -35,25 +35,36 @@ class GithubBrowserViewModel @Inject constructor(
         disposable.add(repository.searchTopGithubRepositoriesByOrganization(organizationName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                handleResponse(GithubRepositoryResponse.Loading)
+            }
             .subscribe { output ->
-                when (output) {
-                    is GithubRepositoryResponse.Loading -> {
-                        isLoadingLiveData.value = true
-                        githubReposLiveData.value = emptyList()
-                        errorStateLiveData.value = null
-                    }
-                    is GithubRepositoryResponse.Failure -> {
-                        isLoadingLiveData.value = false
-                        githubReposLiveData.value = emptyList()
-                        errorStateLiveData.value = output.errorState
-                    }
-                    is GithubRepositoryResponse.Success -> {
-                        isLoadingLiveData.value = false
-                        githubReposLiveData.value = output.result
-                        errorStateLiveData.value = null
-                    }
-                }
+                handleResponse(output)
             }
         )
+    }
+
+    /**
+     * Handle the Loading / Success / Failure responses, updating the
+     * LiveData appropriately
+     */
+    private fun handleResponse(response: GithubRepositoryResponse) {
+        when (response) {
+            is GithubRepositoryResponse.Loading -> {
+                isLoadingLiveData.value = true
+                githubReposLiveData.value = emptyList()
+                errorStateLiveData.value = null
+            }
+            is GithubRepositoryResponse.Failure -> {
+                isLoadingLiveData.value = false
+                githubReposLiveData.value = emptyList()
+                errorStateLiveData.value = response.errorState
+            }
+            is GithubRepositoryResponse.Success -> {
+                isLoadingLiveData.value = false
+                githubReposLiveData.value = response.result
+                errorStateLiveData.value = null
+            }
+        }
     }
 }
