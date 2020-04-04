@@ -25,8 +25,8 @@ data class SearchGithubRepositoriesResponse(
 data class GithubRepository(
     val id: String,
     val name: String,
-    val description: String,
-    val url: String,
+    val description: String?,
+    @SerializedName("html_url") val websiteUrl: String,
     @SerializedName("stargazers_count") val starCount: Int,
-    val language: String
+    val language: String?
 )

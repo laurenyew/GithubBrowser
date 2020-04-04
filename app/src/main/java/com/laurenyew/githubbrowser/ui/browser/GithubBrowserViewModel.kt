@@ -1,5 +1,8 @@
 package com.laurenyew.githubbrowser.ui.browser
 
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,12 +10,16 @@ import com.laurenyew.githubbrowser.repository.GithubBrowserRepository
 import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryResponse
+import com.laurenyew.githubbrowser.ui.detail.GithubRepoDetailActivity
+import com.laurenyew.githubbrowser.ui.utils.CustomTabsHelperUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+
 class GithubBrowserViewModel @Inject constructor(
+    private val context: Context?,
     private val repository: GithubBrowserRepository
 ) : ViewModel() {
     private val disposable = CompositeDisposable()
@@ -30,7 +37,6 @@ class GithubBrowserViewModel @Inject constructor(
     val githubRepos: LiveData<List<GithubRepositoryModel>> = githubReposLiveData
     val errorState: LiveData<ErrorState?> = errorStateLiveData
 
-
     fun searchGithubForTopReposBy(organizationName: String) {
         disposable.add(repository.searchTopGithubRepositoriesByOrganization(organizationName)
             .subscribeOn(Schedulers.io())
@@ -42,6 +48,24 @@ class GithubBrowserViewModel @Inject constructor(
                 handleResponse(output)
             }
         )
+    }
+
+    /**
+     * Attempt to open repo details with Google Chrome Custom Tabs (if supported)
+     * if not, use a WebView activity
+     */
+    fun openRepoDetails(websiteUrl: String) {
+        context?.let {
+            if (CustomTabsHelperUtil.isChromeCustomTabsSupported(context)) {
+                CustomTabsHelperUtil.openCustomChromeTab(context, websiteUrl)
+            } else {
+                val intent = Intent(context, GithubRepoDetailActivity::class.java).apply {
+                    putExtra(GithubRepoDetailActivity.WEBSITE_URL_KEY, websiteUrl)
+                    flags = FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(intent)
+            }
+        }
     }
 
     /**

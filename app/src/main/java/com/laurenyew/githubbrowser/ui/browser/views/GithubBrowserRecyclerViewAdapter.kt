@@ -6,13 +6,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.laurenyew.githubbrowser.R
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
+import com.laurenyew.githubbrowser.ui.browser.GithubBrowserViewModel
 import kotlinx.coroutines.*
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
-class GithubBrowserRecyclerViewAdapter : RecyclerView.Adapter<GithubRepoPreviewViewHolder>(),
+class GithubBrowserRecyclerViewAdapter(private val onItemClicked: ((GithubRepositoryModel) -> Unit)) :
+    RecyclerView.Adapter<GithubRepoPreviewViewHolder>(),
     CoroutineScope {
+
+    @Inject
+    lateinit var viewModel: GithubBrowserViewModel
 
     private val job = Job()
     private var data: MutableList<GithubRepositoryModel> = ArrayList()
@@ -112,6 +118,10 @@ class GithubBrowserRecyclerViewAdapter : RecyclerView.Adapter<GithubRepoPreviewV
 
         holder.starCountTextView.text =
             context.getString(R.string.github_repo_star_count, item.numStars)
+
+        holder.itemView.setOnClickListener {
+            onItemClicked(item)
+        }
     }
 
     override fun getItemCount(): Int = data.size

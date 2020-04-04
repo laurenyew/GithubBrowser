@@ -113,7 +113,9 @@ class GithubBrowserFragment : DaggerFragment() {
 
     private fun loadGithubRepoResults(results: List<GithubRepositoryModel>) {
         if (adapter == null) {
-            adapter = GithubBrowserRecyclerViewAdapter()
+            adapter = GithubBrowserRecyclerViewAdapter { selectedRepo ->
+                viewModel.openRepoDetails(selectedRepo.websiteUrl)
+            }
             github_brower_recycler_view.adapter = adapter
         }
         adapter?.updateData(results)

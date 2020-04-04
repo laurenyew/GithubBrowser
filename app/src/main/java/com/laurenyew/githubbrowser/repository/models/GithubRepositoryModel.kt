@@ -5,5 +5,6 @@ data class GithubRepositoryModel(
     val name: String,
     val language: String?,
     val numStars: Int,
-    val description: String?
+    val description: String?,
+    val websiteUrl: String
 )

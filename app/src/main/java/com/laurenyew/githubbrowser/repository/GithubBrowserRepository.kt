@@ -41,7 +41,8 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
                     name = it.name,
                     language = it.language,
                     description = it.description,
-                    numStars = it.starCount
+                    numStars = it.starCount,
+                    websiteUrl = it.websiteUrl
                 )
             )
         }
