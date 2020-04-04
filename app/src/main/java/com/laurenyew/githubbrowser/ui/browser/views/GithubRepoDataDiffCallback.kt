@@ -1,11 +1,11 @@
 package com.laurenyew.githubbrowser.ui.browser.views
 
 import androidx.recyclerview.widget.DiffUtil
-import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
 
 open class GithubRepoDataDiffCallback(
-    private val oldData: List<GithubRepositoryModel>?,
-    private val newData: List<GithubRepositoryModel>?
+    private val oldData: List<GithubRepoModel>?,
+    private val newData: List<GithubRepoModel>?
 ) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldData?.size ?: 0
 

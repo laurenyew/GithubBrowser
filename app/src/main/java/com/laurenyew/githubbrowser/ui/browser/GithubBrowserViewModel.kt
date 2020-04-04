@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.laurenyew.githubbrowser.repository.GithubBrowserRepository
 import com.laurenyew.githubbrowser.repository.models.ErrorState
-import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
-import com.laurenyew.githubbrowser.repository.models.GithubRepositoryResponse
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModelsResponse
 import com.laurenyew.githubbrowser.ui.detail.GithubRepoDetailActivity
 import com.laurenyew.githubbrowser.ui.utils.CustomChromeTabsHelperUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,8 +25,8 @@ class GithubBrowserViewModel @Inject constructor(
     private val isGoogleChromeTabsSupported =
         CustomChromeTabsHelperUtil.isChromeCustomTabsSupported(context)
     private val disposable = CompositeDisposable()
-    private val githubReposLiveData: MutableLiveData<List<GithubRepositoryModel>> by lazy {
-        MutableLiveData<List<GithubRepositoryModel>>()
+    private val githubReposLiveData: MutableLiveData<List<GithubRepoModel>> by lazy {
+        MutableLiveData<List<GithubRepoModel>>()
     }
     private val errorStateLiveData: MutableLiveData<ErrorState?> by lazy {
         MutableLiveData<ErrorState?>()
@@ -36,7 +36,7 @@ class GithubBrowserViewModel @Inject constructor(
     }
 
     val isLoading: LiveData<Boolean> = isLoadingLiveData
-    val githubRepos: LiveData<List<GithubRepositoryModel>> = githubReposLiveData
+    val githubRepos: LiveData<List<GithubRepoModel>> = githubReposLiveData
     val errorState: LiveData<ErrorState?> = errorStateLiveData
 
     override fun onCleared() {
@@ -49,7 +49,7 @@ class GithubBrowserViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                handleResponse(GithubRepositoryResponse.Loading)
+                handleResponse(GithubRepoModelsResponse.Loading)
             }
             .subscribe { output ->
                 handleResponse(output)
@@ -79,19 +79,19 @@ class GithubBrowserViewModel @Inject constructor(
      * Handle the Loading / Success / Failure responses, updating the
      * LiveData appropriately
      */
-    private fun handleResponse(response: GithubRepositoryResponse) {
+    private fun handleResponse(response: GithubRepoModelsResponse) {
         when (response) {
-            is GithubRepositoryResponse.Loading -> {
+            is GithubRepoModelsResponse.Loading -> {
                 githubReposLiveData.value = emptyList()
                 errorStateLiveData.value = null
                 isLoadingLiveData.value = true
             }
-            is GithubRepositoryResponse.Failure -> {
+            is GithubRepoModelsResponse.Failure -> {
                 githubReposLiveData.value = emptyList()
                 errorStateLiveData.value = response.errorState
                 isLoadingLiveData.value = false
             }
-            is GithubRepositoryResponse.Success -> {
+            is GithubRepoModelsResponse.Success -> {
                 val result = response.result
                 githubReposLiveData.value = result
                 errorStateLiveData.value = null

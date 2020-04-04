@@ -1,17 +1,95 @@
 package com.laurenyew.githubbrowser.ui.browser
 
+import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.laurenyew.githubbrowser.helpers.GithubRepoModelsResponseFactory
+import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_NAME
+import com.laurenyew.githubbrowser.repository.GithubBrowserRepository
+import com.laurenyew.githubbrowser.repository.models.ErrorState
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.Observable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 
-import org.junit.Assert.*
-
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
+@RunWith(MockitoJUnitRunner::class)
 class GithubRepoViewModelUnitTest {
+    private val mockMainThread = newSingleThreadContext("Main thread")
+
+    private var happyPathRepoResponse =
+        GithubRepoModelsResponseFactory.createTestGithubRepoModelsResponseSuccess(3)
+
+    private val happyPathRepoList = GithubRepoModelsResponseFactory.createTestGithubRepos(3)
+
+    @Mock
+    private lateinit var mockContext: Context
+
+    @Mock
+    private lateinit var mockRepository: GithubBrowserRepository
+    private lateinit var viewModel: GithubBrowserViewModel
+
+    @Suppress("unused")
+    @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @Before
+    fun setup() {
+        MockitoAnnotations.initMocks(this)
+        Dispatchers.setMain(mockMainThread)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        mockMainThread.close()
+    }
+
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun `initial setup`() {
+
+    }
+
+    @Test
+    fun `searchGithubForTopReposBy valid organization`() {
+        // Setup
+        val reposObserver: Observer<List<GithubRepoModel>> = mock()
+        val errorObserver: Observer<ErrorState?> = mock()
+        whenever(mockRepository.searchTopGithubRepositoriesByOrganization(VALID_ORG_NAME)).doReturn(
+            Observable.just(happyPathRepoResponse)
+        )
+
+        // Exercise
+        viewModel = GithubBrowserViewModel(mockContext, mockRepository)
+        viewModel.githubRepos.observeForever(reposObserver)
+        viewModel.errorState.observeForever(errorObserver)
+
+        viewModel.searchGithubForTopReposBy(VALID_ORG_NAME)
+
+        // Verify
+        verify(reposObserver, times(1)).onChanged(
+            argThat { equals(happyPathRepoList) }
+        )
+        verify(errorObserver, times(1)).onChanged(null)
+    }
+
+    @Test
+    fun `searchGithubForTopReposBy invalid organization`() {
+
+    }
+
+    @Test
+    fun `searchGithubForTopReposBy empty organization`() {
+
     }
 }

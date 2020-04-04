@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.laurenyew.githubbrowser.R
-import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
 import com.laurenyew.githubbrowser.ui.browser.GithubBrowserViewModel
 import kotlinx.coroutines.*
 import java.util.*
@@ -13,7 +13,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
-class GithubBrowserRecyclerViewAdapter(private val onItemClicked: ((GithubRepositoryModel) -> Unit)) :
+class GithubBrowserRecyclerViewAdapter(private val onItemClicked: ((GithubRepoModel) -> Unit)) :
     RecyclerView.Adapter<GithubRepoPreviewViewHolder>(),
     CoroutineScope {
 
@@ -21,14 +21,14 @@ class GithubBrowserRecyclerViewAdapter(private val onItemClicked: ((GithubReposi
     lateinit var viewModel: GithubBrowserViewModel
 
     private val job = Job()
-    private var data: MutableList<GithubRepositoryModel> = ArrayList()
-    private var pendingDataUpdates = ArrayDeque<List<GithubRepositoryModel>>()
+    private var data: MutableList<GithubRepoModel> = ArrayList()
+    private var pendingDataUpdates = ArrayDeque<List<GithubRepoModel>>()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + job
 
     //RecyclerView Diff.Util (List Updates)
-    fun updateData(newData: List<GithubRepositoryModel>?) {
+    fun updateData(newData: List<GithubRepoModel>?) {
         if (isActive) {
             val data = newData ?: ArrayList()
             pendingDataUpdates.add(data)
@@ -48,7 +48,7 @@ class GithubBrowserRecyclerViewAdapter(private val onItemClicked: ((GithubReposi
      * Handle the diff util update on a background thread
      * (this can take O(n) time so we don't want it on the main thread)
      */
-    private fun updateDataInternal(newData: List<GithubRepositoryModel>?) {
+    private fun updateDataInternal(newData: List<GithubRepoModel>?) {
         val oldData = ArrayList(data)
 
         launch {
@@ -67,7 +67,7 @@ class GithubBrowserRecyclerViewAdapter(private val onItemClicked: ((GithubReposi
      * and take in the latest update
      */
     private fun applyDataDiffResult(
-        newData: List<GithubRepositoryModel>?,
+        newData: List<GithubRepoModel>?,
         diffResult: DiffUtil.DiffResult
     ) {
         if (pendingDataUpdates.isNotEmpty()) {
@@ -90,8 +90,8 @@ class GithubBrowserRecyclerViewAdapter(private val onItemClicked: ((GithubReposi
     }
 
     private fun createDataDiffCallback(
-        oldData: List<GithubRepositoryModel>?,
-        newData: List<GithubRepositoryModel>?
+        oldData: List<GithubRepoModel>?,
+        newData: List<GithubRepoModel>?
     ): DiffUtil.Callback =
         GithubRepoDataDiffCallback(oldData, newData)
     //endregion

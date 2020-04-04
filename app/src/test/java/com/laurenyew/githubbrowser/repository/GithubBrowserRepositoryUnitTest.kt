@@ -1,8 +1,8 @@
 package com.laurenyew.githubbrowser.repository
 
 import android.util.MalformedJsonException
-import com.laurenyew.githubbrowser.helpers.GithubRepositoryResponseFactory.createTestGithubRepositoryResponseSuccess
-import com.laurenyew.githubbrowser.helpers.SearchGithubRepositoriesResponseFactory.createTestSearchGithubRepositoriesResponse
+import com.laurenyew.githubbrowser.helpers.GithubRepoModelsResponseFactory.createTestGithubRepoModelsResponseSuccess
+import com.laurenyew.githubbrowser.helpers.SearchGithubReposResponseFactory.createTestSearchGithubRepositoriesResponse
 import com.laurenyew.githubbrowser.helpers.TestConstants.INVALID_ORG_NAME
 import com.laurenyew.githubbrowser.helpers.TestConstants.INVALID_ORG_QUERY
 import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_NAME
@@ -10,7 +10,7 @@ import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_QUERY
 import com.laurenyew.githubbrowser.repository.GithubBrowserRepository.Companion.INVALID_QUERY_ERROR_CODE
 import com.laurenyew.githubbrowser.repository.GithubBrowserRepository.Companion.RATE_LIMIT_ERROR_CODE
 import com.laurenyew.githubbrowser.repository.models.ErrorState
-import com.laurenyew.githubbrowser.repository.models.GithubRepositoryResponse
+import com.laurenyew.githubbrowser.repository.models.GithubRepoModelsResponse
 import com.laurenyew.githubbrowser.repository.networking.api.GithubApi
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -45,19 +45,19 @@ class GithubBrowserRepositoryUnitTest {
     fun `searchTopGithubRepositoriesByOrganization with valid organization, calls api, returns success response`() {
         // Setup
         val validApiResponse = createTestSearchGithubRepositoriesResponse(3)
-        whenever(mockGithubApi.searchRepositories(VALID_ORG_QUERY)).doReturn(
+        whenever(mockGithubApi.searchRepos(VALID_ORG_QUERY)).doReturn(
             Single.just(
                 validApiResponse
             )
         )
-        val validRepositoryResult = createTestGithubRepositoryResponseSuccess(3)
+        val validRepositoryResult = createTestGithubRepoModelsResponseSuccess(3)
 
         // Exercise
         val testObserver =
             repository.searchTopGithubRepositoriesByOrganization(VALID_ORG_NAME).test()
 
         // Verify
-        verify(mockGithubApi).searchRepositories(VALID_ORG_QUERY)
+        verify(mockGithubApi).searchRepos(VALID_ORG_QUERY)
         testObserver.assertValue(validRepositoryResult)
 
         // Cleanup
@@ -67,18 +67,18 @@ class GithubBrowserRepositoryUnitTest {
     @Test
     fun `searchTopGithubRepositoriesByOrganization with invalid organization, calls api, returns faliure response`() {
         // Setup
-        whenever(mockGithubApi.searchRepositories(INVALID_ORG_QUERY)).doReturn(
+        whenever(mockGithubApi.searchRepos(INVALID_ORG_QUERY)).doReturn(
             Single.error(MalformedJsonException("invalid JSON"))
         )
         val invalidRepositoryResult =
-            GithubRepositoryResponse.Failure(ErrorState.MalformedResultError)
+            GithubRepoModelsResponse.Failure(ErrorState.MalformedResultError)
 
         // Exercise
         val testObserver =
             repository.searchTopGithubRepositoriesByOrganization(INVALID_ORG_NAME).test()
 
         // Verify
-        verify(mockGithubApi).searchRepositories(INVALID_ORG_QUERY)
+        verify(mockGithubApi).searchRepos(INVALID_ORG_QUERY)
         testObserver.assertValue(invalidRepositoryResult)
 
         // Cleanup
@@ -97,8 +97,8 @@ class GithubBrowserRepositoryUnitTest {
 
 
         // Verify
-        assertTrue(result is GithubRepositoryResponse.Failure)
-        val errorState = (result as GithubRepositoryResponse.Failure).errorState
+        assertTrue(result is GithubRepoModelsResponse.Failure)
+        val errorState = (result as GithubRepoModelsResponse.Failure).errorState
         assertEquals(ErrorState.HitRateLimitError, errorState)
     }
 
@@ -114,8 +114,8 @@ class GithubBrowserRepositoryUnitTest {
 
 
         // Verify
-        assertTrue(result is GithubRepositoryResponse.Failure)
-        val errorState = (result as GithubRepositoryResponse.Failure).errorState
+        assertTrue(result is GithubRepoModelsResponse.Failure)
+        val errorState = (result as GithubRepoModelsResponse.Failure).errorState
         assertEquals(ErrorState.InvalidQueryError, errorState)
     }
 
@@ -131,8 +131,8 @@ class GithubBrowserRepositoryUnitTest {
 
 
         // Verify
-        assertTrue(result is GithubRepositoryResponse.Failure)
-        val errorState = (result as GithubRepositoryResponse.Failure).errorState
+        assertTrue(result is GithubRepoModelsResponse.Failure)
+        val errorState = (result as GithubRepoModelsResponse.Failure).errorState
         assertEquals(ErrorState.NetworkError, errorState)
     }
 
@@ -147,8 +147,8 @@ class GithubBrowserRepositoryUnitTest {
 
 
         // Verify
-        assertTrue(result is GithubRepositoryResponse.Failure)
-        val errorState = (result as GithubRepositoryResponse.Failure).errorState
+        assertTrue(result is GithubRepoModelsResponse.Failure)
+        val errorState = (result as GithubRepoModelsResponse.Failure).errorState
         assertEquals(ErrorState.MalformedResultError, errorState)
     }
 
@@ -161,8 +161,8 @@ class GithubBrowserRepositoryUnitTest {
         val result = repository.parseGithubRepositoriesResponseError(exception)
 
         // Verify
-        assertTrue(result is GithubRepositoryResponse.Failure)
-        val errorState = (result as GithubRepositoryResponse.Failure).errorState
+        assertTrue(result is GithubRepoModelsResponse.Failure)
+        val errorState = (result as GithubRepoModelsResponse.Failure).errorState
         assertTrue(errorState is ErrorState.UnknownError)
     }
 }
