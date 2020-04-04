@@ -91,6 +91,9 @@ class GithubBrowserFragment : DaggerFragment() {
                 DividerItemDecoration(context, linearLayoutManager.orientation)
             addItemDecoration(dividerItemDecoration)
         }
+        browser_swipe_refresh.setOnRefreshListener {
+            searchGithubRepos()
+        }
     }
 
     private fun setupViewModelObservers() {
@@ -124,7 +127,7 @@ class GithubBrowserFragment : DaggerFragment() {
     }
 
     private fun updateLoadGithubRepoProgress(isLoading: Boolean) {
-        progress_bar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        browser_swipe_refresh.isRefreshing = isLoading
         if (isLoading) {
             empty_github_browser.visibility = View.GONE
         }

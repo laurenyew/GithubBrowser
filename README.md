@@ -8,7 +8,8 @@ Android sample app to browse popular github repos for a given organization
 - Given an invalid organization name, and empty list / error state should show (/) 
 
 ## Extra features
-- Pull to refresh
+- Pull to refresh (/)
+- Chrome tabs pre-load
 - Unit tests
 - Espresso tests
 
