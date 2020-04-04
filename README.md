@@ -13,8 +13,8 @@ Android sample app to browse popular github repos for a given organization
   - [x] Pull to refresh
   - [x] Handle WebView fallback if Chrome Tabs not available
   - [x] Chrome tabs pre-load
-  - [ ] Unit tests
-  - [ ] Espresso tests
+  - [x] Unit tests
+  - [x] Espresso tests
 
 ## Tech used
 - Kotlin
