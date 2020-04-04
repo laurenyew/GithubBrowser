@@ -69,4 +69,8 @@ object CustomChromeTabsHelperUtil {
             }
         }
     }
+
+    fun clearChromeTabs(){
+        currentClient = null
+    }
 }

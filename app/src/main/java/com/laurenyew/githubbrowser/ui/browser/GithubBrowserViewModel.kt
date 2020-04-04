@@ -39,6 +39,11 @@ class GithubBrowserViewModel @Inject constructor(
     val githubRepos: LiveData<List<GithubRepositoryModel>> = githubReposLiveData
     val errorState: LiveData<ErrorState?> = errorStateLiveData
 
+    override fun onCleared() {
+        super.onCleared()
+        CustomChromeTabsHelperUtil.clearChromeTabs()
+    }
+
     fun searchGithubForTopReposBy(organizationName: String) {
         disposable.add(repository.searchTopGithubRepositoriesByOrganization(organizationName)
             .subscribeOn(Schedulers.io())
