@@ -11,7 +11,7 @@ import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryResponse
 import com.laurenyew.githubbrowser.ui.detail.GithubRepoDetailActivity
-import com.laurenyew.githubbrowser.ui.utils.CustomTabsHelperUtil
+import com.laurenyew.githubbrowser.ui.utils.CustomChromeTabsHelperUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -22,6 +22,8 @@ class GithubBrowserViewModel @Inject constructor(
     private val context: Context?,
     private val repository: GithubBrowserRepository
 ) : ViewModel() {
+    private val isGoogleChromeTabsSupported =
+        CustomChromeTabsHelperUtil.isChromeCustomTabsSupported(context)
     private val disposable = CompositeDisposable()
     private val githubReposLiveData: MutableLiveData<List<GithubRepositoryModel>> by lazy {
         MutableLiveData<List<GithubRepositoryModel>>()
@@ -56,8 +58,8 @@ class GithubBrowserViewModel @Inject constructor(
      */
     fun openRepoDetails(websiteUrl: String) {
         context?.let {
-            if (CustomTabsHelperUtil.isChromeCustomTabsSupported(context)) {
-                CustomTabsHelperUtil.openCustomChromeTab(context, websiteUrl)
+            if (isGoogleChromeTabsSupported) {
+                CustomChromeTabsHelperUtil.openCustomChromeTab(context, websiteUrl)
             } else {
                 val intent = Intent(context, GithubRepoDetailActivity::class.java).apply {
                     putExtra(GithubRepoDetailActivity.WEBSITE_URL_KEY, websiteUrl)
@@ -85,9 +87,15 @@ class GithubBrowserViewModel @Inject constructor(
                 isLoadingLiveData.value = false
             }
             is GithubRepositoryResponse.Success -> {
-                githubReposLiveData.value = response.result
+                val result = response.result
+                githubReposLiveData.value = result
                 errorStateLiveData.value = null
                 isLoadingLiveData.value = false
+                if (isGoogleChromeTabsSupported) {
+                    CustomChromeTabsHelperUtil.warmupChromeTabs(
+                        context,
+                        result?.map { it.websiteUrl })
+                }
             }
         }
     }
