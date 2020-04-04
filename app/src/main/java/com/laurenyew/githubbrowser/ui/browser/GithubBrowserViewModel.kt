@@ -75,19 +75,19 @@ class GithubBrowserViewModel @Inject constructor(
     private fun handleResponse(response: GithubRepositoryResponse) {
         when (response) {
             is GithubRepositoryResponse.Loading -> {
-                isLoadingLiveData.value = true
                 githubReposLiveData.value = emptyList()
                 errorStateLiveData.value = null
+                isLoadingLiveData.value = true
             }
             is GithubRepositoryResponse.Failure -> {
-                isLoadingLiveData.value = false
                 githubReposLiveData.value = emptyList()
                 errorStateLiveData.value = response.errorState
+                isLoadingLiveData.value = false
             }
             is GithubRepositoryResponse.Success -> {
-                isLoadingLiveData.value = false
                 githubReposLiveData.value = response.result
                 errorStateLiveData.value = null
+                isLoadingLiveData.value = false
             }
         }
     }
