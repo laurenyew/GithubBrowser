@@ -13,6 +13,9 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+/**
+ * Provides Retrofit + API instances
+ */
 @Module
 class NetworkModule {
     @Singleton

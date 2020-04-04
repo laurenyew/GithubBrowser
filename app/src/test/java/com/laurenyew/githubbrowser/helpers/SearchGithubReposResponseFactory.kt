@@ -3,6 +3,9 @@ package com.laurenyew.githubbrowser.helpers
 import com.laurenyew.githubbrowser.repository.networking.api.responses.GithubRepo
 import com.laurenyew.githubbrowser.repository.networking.api.responses.SearchGithubReposResponse
 
+/**
+ * Factory to create [SearchGithubReposResponse]
+ */
 object SearchGithubReposResponseFactory {
     fun createTestSearchGithubRepositoriesResponse(numRepos: Int): SearchGithubReposResponse =
         SearchGithubReposResponse(numRepos, createTestGithubRepos(numRepos))

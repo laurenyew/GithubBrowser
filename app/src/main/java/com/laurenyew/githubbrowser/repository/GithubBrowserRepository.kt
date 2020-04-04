@@ -12,8 +12,16 @@ import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Repository (MVVM) for Github Browser Feature
+ */
 @Singleton
 class GithubBrowserRepository @Inject constructor(private val githubApi: GithubApi) {
+    /**
+     * Search for the top github repos by organization
+     * @param organizationName
+     * @return Observable [GithubRepoModelsResponse] with results
+     */
     fun searchTopGithubRepositoriesByOrganization(organizationName: String?): Observable<GithubRepoModelsResponse> =
         githubApi
             .searchRepos(createSearchRepositoriesQuery(organizationName))
@@ -25,6 +33,9 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
             }
             .toObservable()
 
+    /**
+     * Create search query for [GithubApi]
+     */
     private fun createSearchRepositoriesQuery(organizationName: String?): String =
         if (organizationName != null) {
             ORG_QUERY + organizationName
@@ -32,7 +43,9 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
             ""
         }
 
-
+    /**
+     * Parse SUCCESS response into POJO models for [GithubRepoModelsResponse]
+     */
     private fun parseGithubRepositoriesResponseSuccess(response: SearchGithubReposResponse): GithubRepoModelsResponse {
         val repos = arrayListOf<GithubRepoModel>()
         response.items.forEach {
@@ -50,6 +63,9 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
         return GithubRepoModelsResponse.Success(repos)
     }
 
+    /**
+     * Parse exception into [GithubRepoModelsResponse] with a given [ErrorState]
+     */
     @VisibleForTesting
     fun parseGithubRepositoriesResponseError(exception: Throwable): GithubRepoModelsResponse {
         val errorState = when (exception) {
@@ -68,6 +84,7 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
     companion object {
         @VisibleForTesting
         const val INVALID_QUERY_ERROR_CODE = 422
+
         @VisibleForTesting
         const val RATE_LIMIT_ERROR_CODE = 403
         private const val ORG_QUERY = "org:"

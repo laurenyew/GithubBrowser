@@ -28,6 +28,9 @@ import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.HttpException
 import retrofit2.Response
 
+/**
+ * Unit tests for [GithubBrowserRepository] features
+ */
 @RunWith(MockitoJUnitRunner::class)
 class GithubBrowserRepositoryUnitTest {
 

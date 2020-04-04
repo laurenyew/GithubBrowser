@@ -6,19 +6,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.laurenyew.githubbrowser.R
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
-import com.laurenyew.githubbrowser.ui.browser.GithubBrowserViewModel
 import kotlinx.coroutines.*
 import java.util.*
-import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * RecyclerViewAdapter for Github Browser results
+ * - uses DiffUtil to improve performance on updating results
+ * @param onItemClicked click listener from view
+ */
 class GithubBrowserRecyclerViewAdapter(private val onItemClicked: ((GithubRepoModel) -> Unit)) :
     RecyclerView.Adapter<GithubRepoPreviewViewHolder>(),
     CoroutineScope {
-
-    @Inject
-    lateinit var viewModel: GithubBrowserViewModel
 
     private val job = Job()
     private var data: MutableList<GithubRepoModel> = ArrayList()

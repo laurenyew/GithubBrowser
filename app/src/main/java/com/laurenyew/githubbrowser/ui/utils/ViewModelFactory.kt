@@ -6,6 +6,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
+/**
+ * Provide helper ViewModelFactory to create the ViewModels with Injected constructors
+ */
 @Singleton
 class ViewModelFactory @Inject constructor(
     private val viewModels: MutableMap<Class<out ViewModel>, Provider<ViewModel>>

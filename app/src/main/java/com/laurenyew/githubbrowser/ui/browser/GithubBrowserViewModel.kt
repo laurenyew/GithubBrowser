@@ -16,7 +16,9 @@ import com.laurenyew.githubbrowser.utils.SchedulersProvider
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-
+/**
+ * ViewModel (MVVM) for Github Browser Feature
+ */
 class GithubBrowserViewModel @Inject constructor(
     private val context: Context?,
     private val repository: GithubBrowserRepository,
@@ -25,6 +27,8 @@ class GithubBrowserViewModel @Inject constructor(
     private val isGoogleChromeTabsSupported =
         CustomChromeTabsHelperUtil.isChromeCustomTabsSupported(context)
     private val disposable = CompositeDisposable()
+
+    // Private live data variables
     private val githubReposLiveData: MutableLiveData<List<GithubRepoModel>> by lazy {
         MutableLiveData<List<GithubRepoModel>>()
     }
@@ -35,16 +39,25 @@ class GithubBrowserViewModel @Inject constructor(
         MutableLiveData<Boolean>()
     }
 
+    // View Model available live data variables (used by View)
     val isLoading: LiveData<Boolean> = isLoadingLiveData
     val githubRepos: LiveData<List<GithubRepoModel>> = githubReposLiveData
     val errorState: LiveData<ErrorState?> = errorStateLiveData
 
+    /**
+     * When the View Model is destroyed,
+     * clean up RxJava disposable and clear the chrome tab session
+     */
     override fun onCleared() {
         super.onCleared()
         disposable.clear()
         CustomChromeTabsHelperUtil.clearChromeTabs()
     }
 
+    /**
+     * Call the repository for search results for organization name
+     * (Updates the view model live data with the results)
+     */
     fun searchGithubForTopReposBy(organizationName: String) {
         disposable.add(repository.searchTopGithubRepositoriesByOrganization(organizationName)
             .subscribeOn(schedulersProvider.io())

@@ -12,13 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.laurenyew.githubbrowser.R
 import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
-import com.laurenyew.githubbrowser.ui.utils.ViewModelFactory
 import com.laurenyew.githubbrowser.ui.browser.views.GithubBrowserRecyclerViewAdapter
+import com.laurenyew.githubbrowser.ui.utils.ViewModelFactory
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.github_browser_fragment.*
 import javax.inject.Inject
 
-
+/**
+ * Main View logic (MVVM) for Github Browser feature
+ * - Includes: Search, RecyclerView, Pull to Refresh, Menu Refresh
+ */
 class GithubBrowserFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -34,9 +37,7 @@ class GithubBrowserFragment : DaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.github_browser_fragment, container, false)
-    }
+    ): View = inflater.inflate(R.layout.github_browser_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,6 +54,9 @@ class GithubBrowserFragment : DaggerFragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    /**
+     * Include refresh menu option for accessibility
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         if (item.itemId == R.id.menu_refresh) {
             searchGithubRepos()
@@ -66,6 +70,11 @@ class GithubBrowserFragment : DaggerFragment() {
         adapter?.onDestroy()
     }
 
+    /**
+     * Setup Search View:
+     * When the user has submitted a full organization name,
+     * then run the search and dismiss the keyboard
+     */
     private fun setupSearchView() {
         github_browser_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -97,7 +106,6 @@ class GithubBrowserFragment : DaggerFragment() {
     }
 
     private fun setupViewModelObservers() {
-        // Setup view model observers
         viewModel.githubRepos.observe(viewLifecycleOwner, Observer { repos ->
             loadGithubRepoResults(repos)
         })
@@ -109,11 +117,17 @@ class GithubBrowserFragment : DaggerFragment() {
         })
     }
 
+    /**
+     * Search github repos with the search view's query
+     */
     private fun searchGithubRepos() {
         val organizationName = github_browser_search_view.query.toString()
         viewModel.searchGithubForTopReposBy(organizationName)
     }
 
+    /**
+     * Load the repo results from the view model back into the recycler view
+     */
     private fun loadGithubRepoResults(results: List<GithubRepoModel>) {
         if (adapter == null) {
             adapter = GithubBrowserRecyclerViewAdapter { selectedRepo ->

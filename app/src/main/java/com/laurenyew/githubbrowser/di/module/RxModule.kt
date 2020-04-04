@@ -6,6 +6,9 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+/**
+ * Provides RxJava dependencies
+ */
 @Module
 class RxModule {
     @Singleton
