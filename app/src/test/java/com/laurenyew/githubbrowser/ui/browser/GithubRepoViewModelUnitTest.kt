@@ -10,6 +10,7 @@ import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Observable
+import io.reactivex.schedulers.TestScheduler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
@@ -20,8 +21,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
+
 
 @RunWith(MockitoJUnitRunner::class)
 class GithubRepoViewModelUnitTest {
@@ -34,10 +37,17 @@ class GithubRepoViewModelUnitTest {
 
     @Mock
     private lateinit var mockContext: Context
-
     @Mock
     private lateinit var mockRepository: GithubBrowserRepository
+    @Mock
+    private lateinit var reposObserver: Observer<List<GithubRepoModel>>
+    @Mock
+    private lateinit var errorObserver: Observer<ErrorState?>
+
+    private val testScheduler = TestScheduler()
+
     private lateinit var viewModel: GithubBrowserViewModel
+
 
     @Suppress("unused")
     @get:Rule
@@ -47,6 +57,16 @@ class GithubRepoViewModelUnitTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
         Dispatchers.setMain(mockMainThread)
+
+        viewModel = GithubBrowserViewModel(mockContext, mockRepository)
+        viewModel.githubRepos.observeForever(reposObserver)
+        viewModel.errorState.observeForever(errorObserver)
+
+
+        whenever(viewModel)
+        Mockito.doReturn(testScheduler)
+            .`when`(viewModel)
+            .getSchedulerIo()
     }
 
     @After
@@ -63,16 +83,12 @@ class GithubRepoViewModelUnitTest {
     @Test
     fun `searchGithubForTopReposBy valid organization`() {
         // Setup
-        val reposObserver: Observer<List<GithubRepoModel>> = mock()
-        val errorObserver: Observer<ErrorState?> = mock()
-        whenever(mockRepository.searchTopGithubRepositoriesByOrganization(VALID_ORG_NAME)).doReturn(
+       whenever(mockRepository.searchTopGithubRepositoriesByOrganization(VALID_ORG_NAME)).doReturn(
             Observable.just(happyPathRepoResponse)
         )
 
         // Exercise
-        viewModel = GithubBrowserViewModel(mockContext, mockRepository)
-        viewModel.githubRepos.observeForever(reposObserver)
-        viewModel.errorState.observeForever(errorObserver)
+
 
         viewModel.searchGithubForTopReposBy(VALID_ORG_NAME)
 

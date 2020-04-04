@@ -12,15 +12,15 @@ import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModelsResponse
 import com.laurenyew.githubbrowser.ui.detail.GithubRepoDetailActivity
 import com.laurenyew.githubbrowser.ui.utils.CustomChromeTabsHelperUtil
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.laurenyew.githubbrowser.utils.SchedulersProvider
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 
 class GithubBrowserViewModel @Inject constructor(
     private val context: Context?,
-    private val repository: GithubBrowserRepository
+    private val repository: GithubBrowserRepository,
+    private val schedulersProvider: SchedulersProvider
 ) : ViewModel() {
     private val isGoogleChromeTabsSupported =
         CustomChromeTabsHelperUtil.isChromeCustomTabsSupported(context)
@@ -41,13 +41,14 @@ class GithubBrowserViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        disposable.clear()
         CustomChromeTabsHelperUtil.clearChromeTabs()
     }
 
     fun searchGithubForTopReposBy(organizationName: String) {
         disposable.add(repository.searchTopGithubRepositoriesByOrganization(organizationName)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(schedulersProvider.io())
+            .observeOn(schedulersProvider.mainThread())
             .doOnSubscribe {
                 handleResponse(GithubRepoModelsResponse.Loading)
             }
