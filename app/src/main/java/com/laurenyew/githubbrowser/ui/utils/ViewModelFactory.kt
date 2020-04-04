@@ -1,4 +1,4 @@
-package com.laurenyew.githubbrowser.ui
+package com.laurenyew.githubbrowser.ui.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

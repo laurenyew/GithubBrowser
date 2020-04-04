@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.laurenyew.githubbrowser.R
 import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepositoryModel
-import com.laurenyew.githubbrowser.ui.ViewModelFactory
+import com.laurenyew.githubbrowser.ui.utils.ViewModelFactory
 import com.laurenyew.githubbrowser.ui.browser.views.GithubBrowserRecyclerViewAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.github_browser_fragment.*

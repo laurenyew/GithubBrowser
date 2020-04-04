@@ -26,7 +26,7 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
 
     private fun createSearchRepositoriesQuery(organizationName: String?): String =
         if (organizationName != null) {
-            "org:${organizationName}"
+            ORG_QUERY + organizationName
         } else {
             ""
         }
@@ -66,5 +66,6 @@ class GithubBrowserRepository @Inject constructor(private val githubApi: GithubA
     companion object {
         private const val INVALID_QUERY_ERROR_CODE = 422
         private const val RATE_LIMIT_ERROR_CODE = 403
+        private const val ORG_QUERY = "org:"
     }
 }

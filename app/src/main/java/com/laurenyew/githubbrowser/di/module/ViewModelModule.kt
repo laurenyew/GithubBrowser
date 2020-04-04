@@ -3,7 +3,7 @@ package com.laurenyew.githubbrowser.di.module
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.laurenyew.githubbrowser.di.keys.ViewModelKey
-import com.laurenyew.githubbrowser.ui.ViewModelFactory
+import com.laurenyew.githubbrowser.ui.utils.ViewModelFactory
 import com.laurenyew.githubbrowser.ui.browser.GithubBrowserViewModel
 import dagger.Binds
 import dagger.Module
