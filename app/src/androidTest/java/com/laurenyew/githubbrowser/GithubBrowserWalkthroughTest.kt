@@ -2,7 +2,6 @@ package com.laurenyew.githubbrowser
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
@@ -13,6 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.laurenyew.githubbrowser.ui.GithubBrowserActivity
 import com.laurenyew.githubbrowser.ui.browser.GithubBrowserScreen
 import junit.framework.Assert.assertEquals
@@ -49,7 +50,7 @@ class GithubBrowserWalkthroughTest {
         onView(withText("1")).perform(click())
 
         // Go back
-        Espresso.pressBack()
+        pressBack()
 
         // Verify back on list
         browser.searchTitleTextView.check(matches(isDisplayed()))
@@ -68,6 +69,11 @@ class GithubBrowserWalkthroughTest {
         browser.repoRecyclerView.check(RecyclerViewItemCountAssertion(0))
         browser.emptyTextView.check(matches(isDisplayed()))
         browser.errorTextView.check(matches(isDisplayed()))
+    }
+
+    private fun pressBack() {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        device.pressBack()
     }
 
     class RecyclerViewItemCountAssertion(private val expectedCount: Int) : ViewAssertion {
