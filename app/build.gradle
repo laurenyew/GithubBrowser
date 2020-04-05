@@ -32,10 +32,6 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
-    kapt {
-        generateStubs = true
-    }
-
     testOptions {
         unitTests {
             includeAndroidResources = true
