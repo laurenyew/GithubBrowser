@@ -2,6 +2,9 @@ package com.laurenyew.githubbrowser.repository.networking.api.responses
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Network JSON response model for Search Github Repos
+ */
 data class SearchGithubReposResponse(
     @SerializedName("total_count") val totalCount: Int,
     val items: Array<GithubRepo>

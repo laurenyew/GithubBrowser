@@ -6,6 +6,9 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+/**
+ * Provide Repository instances (MVVM)
+ */
 @Module
 class RepositoryModule {
     @Singleton

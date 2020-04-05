@@ -3,6 +3,9 @@ package com.laurenyew.githubbrowser.helpers
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModelsResponse
 
+/**
+ * Factory to create [GithubRepoModelsResponseF]
+ */
 object GithubRepoModelsResponseFactory {
     fun createTestGithubRepoModelsResponseSuccess(numRepos: Int): GithubRepoModelsResponse =
         GithubRepoModelsResponse.Success(createTestGithubRepos(numRepos))

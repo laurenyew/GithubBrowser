@@ -3,6 +3,9 @@ package com.laurenyew.githubbrowser.ui.browser.views
 import androidx.recyclerview.widget.DiffUtil
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
 
+/**
+ * DiffUtil.Callback to differentiate one item from another
+ */
 open class GithubRepoDataDiffCallback(
     private val oldData: List<GithubRepoModel>?,
     private val newData: List<GithubRepoModel>?

@@ -5,6 +5,9 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * Retrofit interface for Github API (https://developer.github.com/v3/)
+ */
 interface GithubApi {
     @GET("/search/repositories")
     fun searchRepos(

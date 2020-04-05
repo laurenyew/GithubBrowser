@@ -22,7 +22,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
+/**
+ * Walkthrough test for Search Github Repo + error case
+ */
 @RunWith(AndroidJUnit4::class)
 class GithubBrowserWalkthroughTest {
     private val browser = GithubBrowserScreen()

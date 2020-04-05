@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.laurenyew.githubbrowser.R
 import com.laurenyew.githubbrowser.ui.browser.GithubBrowserFragment
 
+/**
+ * Wrapper activity for Github Browser feature
+ */
 class GithubBrowserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

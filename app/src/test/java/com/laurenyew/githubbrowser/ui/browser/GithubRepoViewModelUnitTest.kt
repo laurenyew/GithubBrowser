@@ -29,7 +29,9 @@ import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.concurrent.TimeUnit
 
-
+/**
+ * Unit tests for [GithubRepoViewModel] features
+ */
 @RunWith(MockitoJUnitRunner::class)
 class GithubRepoViewModelUnitTest {
     private val mockMainThread = newSingleThreadContext("Main thread")

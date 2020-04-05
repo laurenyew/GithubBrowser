@@ -5,6 +5,10 @@ import com.laurenyew.githubbrowser.R
 import dagger.android.DaggerActivity
 import kotlinx.android.synthetic.main.github_repo_detail_activity.*
 
+/**
+ * Simple WebView activity to show the given Github Repository webpage
+ * (This is a fallback activity if Chrome Tabs is not available on the phone)
+ */
 class GithubRepoDetailActivity : DaggerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

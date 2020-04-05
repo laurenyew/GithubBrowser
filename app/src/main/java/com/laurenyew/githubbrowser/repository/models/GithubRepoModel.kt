@@ -1,5 +1,8 @@
 package com.laurenyew.githubbrowser.repository.models
 
+/**
+ * POJO data model for Github Repos used in business logic
+ */
 data class GithubRepoModel(
     val id: String,
     val name: String,
