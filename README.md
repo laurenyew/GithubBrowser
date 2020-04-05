@@ -35,9 +35,11 @@ Use Android Studio to build/run app / unit tests / espresso tests, or use the fo
 ## Tech used
 - Kotlin
 - RxJava
+- RxKotlin
+- Kotlin Coroutines
 - Dagger 2
 - Moshi
-- Retrofit
+- Retrofit 2
 - Okhttp
 - Gradle
 - MockitoKotlin
