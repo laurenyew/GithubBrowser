@@ -58,11 +58,22 @@ class GithubBrowserFragment : DaggerFragment() {
      * Include refresh menu option for accessibility
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        if (item.itemId == R.id.menu_refresh) {
-            searchGithubRepos()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.menu_refresh -> {
+                searchGithubRepos()
+                true
+            }
+            R.id.menu_show_webview_detail -> {
+                viewModel.setShouldPreferChromeTab(false)
+                true
+            }
+            R.id.menu_show_chrome_tab_detail -> {
+                viewModel.setShouldPreferChromeTab(true)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
 
     override fun onDestroyView() {

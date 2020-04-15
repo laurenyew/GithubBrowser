@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import com.laurenyew.githubbrowser.helpers.GithubRepoModelsResponseFactory
 import com.laurenyew.githubbrowser.helpers.TestConstants.INVALID_ORG_NAME
 import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_NAME
+import com.laurenyew.githubbrowser.helpers.TestConstants.VALID_ORG_NAME_WITH_SPACES
 import com.laurenyew.githubbrowser.repository.GithubBrowserRepository
 import com.laurenyew.githubbrowser.repository.models.ErrorState
 import com.laurenyew.githubbrowser.repository.models.GithubRepoModel
@@ -114,6 +115,26 @@ class GithubRepoViewModelUnitTest {
 
         // Exercise
         viewModel.searchGithubForTopReposBy(VALID_ORG_NAME)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        // Verify
+        verify(reposObserver, times(1)).onChanged(
+            argThat { equals(happyPathRepoList) }
+        )
+        verify(errorObserver, times(2)).onChanged(null)
+        verify(isLoadingObserver, times(1)).onChanged(true)
+        verify(isLoadingObserver, times(1)).onChanged(false)
+    }
+
+    @Test
+    fun `searchGithubForTopReposBy valid organization trimmed`() {
+        // Setup
+        whenever(mockRepository.searchTopGithubRepositoriesByOrganization(VALID_ORG_NAME)).doReturn(
+            Observable.just(happyPathRepoResponse)
+        )
+
+        // Exercise
+        viewModel.searchGithubForTopReposBy(VALID_ORG_NAME_WITH_SPACES)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         // Verify

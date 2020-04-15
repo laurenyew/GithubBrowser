@@ -1,6 +1,7 @@
 package com.laurenyew.githubbrowser.ui.browser
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.lifecycle.LiveData
@@ -38,6 +39,15 @@ class GithubBrowserViewModel @Inject constructor(
     private val isLoadingLiveData: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
+    private var shouldPreferChromeTab: Boolean = true
+
+    init {
+        val preferChromeTab =
+            context?.getSharedPreferences(REPO_DETAILS_TYPE_SHARED_PREF, MODE_PRIVATE)
+                ?.getBoolean(REPO_DETAILS_TYPE_SHARED_PREF_KEY, true)
+        preferChromeTab?.let { shouldPreferChromeTab = it }
+    }
+
 
     // View Model available live data variables (used by View)
     val isLoading: LiveData<Boolean> = isLoadingLiveData
@@ -54,12 +64,20 @@ class GithubBrowserViewModel @Inject constructor(
         CustomChromeTabsHelperUtil.clearChromeTabs()
     }
 
+    fun setShouldPreferChromeTab(preferChromeTab: Boolean) {
+        shouldPreferChromeTab = preferChromeTab
+        context?.getSharedPreferences(REPO_DETAILS_TYPE_SHARED_PREF, MODE_PRIVATE)
+            ?.edit()
+            ?.putBoolean(REPO_DETAILS_TYPE_SHARED_PREF_KEY, preferChromeTab)
+            ?.apply()
+    }
+
     /**
      * Call the repository for search results for organization name
      * (Updates the view model live data with the results)
      */
     fun searchGithubForTopReposBy(organizationName: String) {
-        disposable.add(repository.searchTopGithubRepositoriesByOrganization(organizationName)
+        disposable.add(repository.searchTopGithubRepositoriesByOrganization(organizationName.trim())
             .subscribeOn(schedulersProvider.io())
             .observeOn(schedulersProvider.mainThread())
             .doOnSubscribe {
@@ -77,7 +95,7 @@ class GithubBrowserViewModel @Inject constructor(
      */
     fun openRepoDetails(websiteUrl: String) {
         context?.let {
-            if (isGoogleChromeTabsSupported) {
+            if (isGoogleChromeTabsSupported && shouldPreferChromeTab) {
                 CustomChromeTabsHelperUtil.openCustomChromeTab(context, websiteUrl)
             } else {
                 val intent = Intent(context, GithubRepoDetailActivity::class.java).apply {
@@ -117,5 +135,10 @@ class GithubBrowserViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val REPO_DETAILS_TYPE_SHARED_PREF = "repo_details_type"
+        private const val REPO_DETAILS_TYPE_SHARED_PREF_KEY = "prefer_chrome_key"
     }
 }
